@@ -1,5 +1,35 @@
 const mongoose = require('mongoose');
 const Store = mongoose.model('Store');
+const multer = require('multer');
+const Jimp = require('jimp');
+const uuid = require('uuid');
+
+const multerOptions = {
+  storage: multer.memoryStorage(),
+  fileFilter(req, file, cb) {
+    const isPhoto = file.mimetype.startsWith('image/');
+    if (isPhoto) {
+      cb(null, true);
+    } else {
+      cb({ message: "That filetype isn't allowed"}, false);
+    }
+  }
+};
+
+exports.upload = multer(multerOptions).single('photo');
+exports.resize = async (req, res, next) => {
+  if (!req.file) {
+    return next();
+  }
+console.log(req.file);
+  const extension = req.file.mimetype.split('/')[1];
+  req.body.photo = `${uuid.v4()}.${extension}`;
+  const photo = await Jimp.read(req.file.buffer);
+  console.log(req.body.photo);
+  await photo.resize(800, Jimp.AUTO);
+  await photo.write(`./public/uploads/${req.body.photo}`);
+  next();
+};
 
 exports.homePage = (req, res) => {
   res.render('index');
@@ -27,6 +57,9 @@ exports.editStore = async (req, res) => {
 };
 
 exports.updateStore = async (req, res) => {
+  // set the type again as it gets cleared every time you update.
+  // This is used when searching by locations in mongo
+  req.body.location.type = "Point";
   const store = await Store.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
