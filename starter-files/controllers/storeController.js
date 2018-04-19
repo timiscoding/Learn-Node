@@ -21,11 +21,9 @@ exports.resize = async (req, res, next) => {
   if (!req.file) {
     return next();
   }
-console.log(req.file);
   const extension = req.file.mimetype.split('/')[1];
   req.body.photo = `${uuid.v4()}.${extension}`;
   const photo = await Jimp.read(req.file.buffer);
-  console.log(req.body.photo);
   await photo.resize(800, Jimp.AUTO);
   await photo.write(`./public/uploads/${req.body.photo}`);
   next();
@@ -47,7 +45,6 @@ exports.createStore = async (req, res) => {
 
 exports.getStores = async (req, res) => {
   const stores = await Store.find();
-  console.log(stores);
   res.render('stores', {title: 'Stores', stores});
 };
 
@@ -66,4 +63,10 @@ exports.updateStore = async (req, res) => {
   });
   req.flash('success', `Succesfully updated <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View store</a>`);
   res.redirect(`/stores/${store._id}/edit`);
+};
+
+exports.getStoreBySlug = async (req, res, next) => {
+  const store = await Store.findOne({ slug: req.params.slug });
+  if (!store) return next();
+  res.render('store', {title: store.name, store});
 };
