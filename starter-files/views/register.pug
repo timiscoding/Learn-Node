@@ -5,9 +5,9 @@ block content
     form.form(action="/register", method="POST")
       h2 Register
       label(for="name") Name
-      input(type="text" name="name" value=body.name || '')
+      input(type="text" name="name" value=body && body.name || '')
       label(for="email") Email address
-      input(type="text" name="email" value=body.email || '')
+      input(type="text" name="email" value=body && body.email || '')
       label(for="password") Password
       input(type="password" name="password")
       label(for="password-confirm") Confirm password

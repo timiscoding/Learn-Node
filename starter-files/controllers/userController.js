@@ -9,7 +9,8 @@ exports.registerForm = (req, res) => {
 };
 
 exports.validateRegister = (req, res, next) => {
-  req.sanitizeBody('name');
+  req.sanitizeBody('name').trim();
+  req.sanitizeBody('name').whitelist('\\w');
   req.checkBody('name', 'You must supply a name').notEmpty();
   req.checkBody('email', 'Invalid email address').isEmail();
   req.sanitizeBody('email').normalizeEmail({
