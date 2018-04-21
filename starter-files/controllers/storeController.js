@@ -57,7 +57,7 @@ exports.updateStore = async (req, res) => {
   // set the type again as it gets cleared every time you update.
   // This is used when searching by locations in mongo
   req.body.location.type = "Point";
-  const store = await Store.findByIdAndUpdate(req.params.id, req.body, {
+  const store = await Store.findByIdAnd(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
