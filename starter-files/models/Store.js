@@ -37,7 +37,7 @@ const storeSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: 'You must supply an author',
-  },
+  }
 });
 
 storeSchema.index({
