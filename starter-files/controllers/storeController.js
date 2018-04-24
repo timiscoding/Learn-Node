@@ -146,3 +146,8 @@ exports.getHearts = async (req, res) => {
   const stores = await Store.find({ _id: { $in: req.user.hearts }});
   res.render('stores', {title: 'Hearts', stores});
 };
+
+exports.getTopStores = async (req, res) => {
+  const stores = await Store.getTopStores();
+  res.render('topStores', {title: 'Top stores', stores});
+};

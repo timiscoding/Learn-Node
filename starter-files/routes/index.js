@@ -47,6 +47,8 @@ router.post('/reviews/:id', authController.isLoggedIn, catchErrors(reviewControl
 
 router.get('/map', storeController.map);
 
+router.get('/top', catchErrors(storeController.getTopStores));
+
 /*
   API
 */
